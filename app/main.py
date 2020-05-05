@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from pony.orm import db_session
 
 from models import setup_database
-from tools import custom_openapi
 from models_api import NewUser
 
 load_dotenv()
