@@ -40,10 +40,11 @@ def new_user(u: NewUser):
 @app.get("/user/{id}")
 @db_session
 def get_user(id: int, res: Response):
-    u = User[id]
-    if u is None:
+    try:
+        u = User[id]
+    except:
         res.status_code = status.HTTP_404_NOT_FOUND
-        return {}
+        return {"error": f'No user with {id} found'}
     return u.to_dict()
 
 
