@@ -3,7 +3,7 @@ from fastapi.openapi.utils import get_openapi
 from dotenv import load_dotenv
 from pony.orm import db_session
 
-from models import setup_database
+from models import setup_database, User
 from models_api import NewUser
 
 load_dotenv()
