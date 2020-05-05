@@ -1,0 +1,65 @@
+version: '2'
+services:
+  app:
+    container_name: full_app
+    build: .
+    environment:
+      - VIRTUAL_HOST=${VIRTUAL_HOST_API}
+      - VIRTUAL_PORT=${VIRTUAL_PORT_API}
+      - LETSENCRYPT_HOST=${LETSENCRYPT_HOST_API}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+    ports:
+      - 8080:80
+    restart: on-failure
+    volumes:
+      - api:/app
+    depends_on:
+      - fullstack-postgres
+    networks:
+      - fullstack
+
+  fullstack-postgres:
+    image: postgres:latest
+    container_name: full_db_postgres
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - DATABASE_HOST=${DB_HOST}
+      - VIRTUAL_HOST=${VIRTUAL_HOST_PG}
+      - VIRTUAL_PORT=${VIRTUAL_PORT_PG}
+      - LETSENCRYPT_HOST=${LETSENCRYPT_HOST_PG}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+    ports:
+      - '5432:5432'
+    volumes:
+      - database_postgres:/var/lib/postgresql/data
+    networks:
+      - fullstack
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: full_pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+      - VIRTUAL_HOST=${VIRTUAL_HOST_PG_ADM}
+      - VIRTUAL_PORT=${VIRTUAL_PORT_PG_ADM}
+      - LETSENCRYPT_HOST=${LETSENCRYPT_HOST_PG_ADM}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+    depends_on:
+      - fullstack-postgres
+    ports:
+      - "5050:80"
+    networks:
+      - fullstack
+    restart: unless-stopped
+
+volumes:
+  api:
+  database_postgres:
+
+# Networks to be created to facilitate communication between containers
+networks:
+  fullstack:
+    driver: bridge
