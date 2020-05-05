@@ -32,4 +32,4 @@ def get_user(id: int, res: Response):
     return u.to_dict()
 
 
-app.openapi = custom_openapi(app)
+app.openapi = custom_openapi

@@ -1,7 +1,7 @@
 from fastapi.openapi.utils import get_openapi
 
 
-def custom_openapi(app):
+def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
     openapi_schema = get_openapi(
