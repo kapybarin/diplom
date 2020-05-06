@@ -63,6 +63,7 @@ def new_user(u: NewUser, res: Response):
         commit()
         return {"id": User.get(email=txt).id}
     else:
+        res.status_code = status.HTTP_400_BAD_REQUEST
         return {"error": f'User already exists with the same email and id {curr_user.id}'}
 
 
