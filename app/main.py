@@ -74,7 +74,9 @@ def get_user(id: int, res: Response):
     except RowNotFound:
         res.status_code = status.HTTP_404_NOT_FOUND
         return {"error": f'No user with id {id} found'}
-    return u.to_dict().pop("password", None)
+    message = u.to_dict()
+    message.pop("password", None)
+    return message
 
 
 app.openapi = custom_openapi
