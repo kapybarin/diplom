@@ -57,7 +57,6 @@ def new_user(u: NewUser, res: Response):
     if email_valid is False:
         res.status_code = status.HTTP_400_BAD_REQUEST
         return {"error": txt}
-    print(txt)
     try:
         curr_user = User.get(email=email_valid)
         return {"error": f'User already exists with the same email and id {curr_user.id}'}
