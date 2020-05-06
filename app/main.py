@@ -57,12 +57,12 @@ def new_user(u: NewUser, res: Response):
     if email_valid is False:
         res.status_code = status.HTTP_400_BAD_REQUEST
         return {"error": txt}
-    try:
-        curr_user = User.get(email=txt)
-        return {"error": f'User already exists with the same email and id {curr_user.id}'}
-    except RowNotFound:
+    curr_user = User.get(email=txt)
+    if curr_user is None:
         new = User(email=txt, first_name=u.name, last_name=u.surname, password=u.password)
         return {"id": new.id}
+    else:
+        return {"error": f'User already exists with the same email and id {curr_user.id}'}
 
 
 @app.get("/user/{id}")
