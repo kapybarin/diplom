@@ -3,7 +3,7 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 
 from dotenv import load_dotenv
-from pony.orm import db_session, RowNotFound
+from pony.orm import db_session, RowNotFound, commit
 
 from models import setup_database, User
 from models_api import NewUser
@@ -59,8 +59,9 @@ def new_user(u: NewUser, res: Response):
         return {"error": txt}
     curr_user = User.get(email=txt)
     if curr_user is None:
-        new = User(email=txt, first_name=u.name, last_name=u.surname, password=u.password)
-        return {"id": new.id}
+        User(email=txt, first_name=u.name, last_name=u.surname, password=u.password)
+        commit()
+        return {"id": User.get(email=txt).id}
     else:
         return {"error": f'User already exists with the same email and id {curr_user.id}'}
 
