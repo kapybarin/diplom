@@ -1,5 +1,7 @@
 from fastapi import FastAPI, Response, status
 from fastapi.openapi.utils import get_openapi
+from fastapi.middleware.cors import CORSMiddleware
+
 from dotenv import load_dotenv
 from pony.orm import db_session
 
@@ -9,6 +11,22 @@ from models_api import NewUser
 load_dotenv()
 app = FastAPI()
 db = setup_database()
+
+origins = [
+    "http://api.noirdjinn.dev",
+    "https://api.noirdjinn.dev",
+    "http://localhost",
+    "http://localhost:3000",
+    "https://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def custom_openapi():
     if app.openapi_schema:
