@@ -7,7 +7,7 @@ import jwt
 from typing import Tuple
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-SECRET_KEY = getenv("API_SECRET")
+SECRET_KEY = getenv('API_SECRET', 'TESTKEY')
 ALGORITHM = 'HS256'
 
 
@@ -35,5 +35,6 @@ def create_access_token(*, data: dict, expires_delta: timedelta = None):
     else:
         expire = datetime.utcnow() + timedelta(days=30)
     to_encode.update({"exp": str(expire)})
+    print(SECRET_KEY)
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
