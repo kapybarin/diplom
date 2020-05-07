@@ -55,8 +55,8 @@ def validate_token(token: str):
         email: str = payload.get("sub")
         if email is None:
             return False, None,1
-    except PyJWTError:
-        return False, None, 2
+    except PyJWTError as e:
+        return False, None, str(e)
     user = User.find(email=email)
     if user is None:
         return False, None, 3
