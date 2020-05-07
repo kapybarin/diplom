@@ -3,7 +3,7 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from dotenv import load_dotenv
-from pony.orm import db_session, RowNotFound, commit
+from pony.orm import db_session, RowNotFound, commit, select
 from jwt import PyJWTError
 import jwt
 
@@ -123,7 +123,7 @@ def list_users(token: str, res: Response):
     if not is_valid_token:
         res.status_code = status.HTTP_403_FORBIDDEN
         return {"err": "Token is not valid"}
-    u = [x.to_dict() for x in User[:]]
+    u = [x.to_dict() for x in select(u for u in User)[:]]
 
     return {"Users": u}
 
