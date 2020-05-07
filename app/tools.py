@@ -7,7 +7,7 @@ import jwt
 from typing import Tuple
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-SECRET_KEY = getenv('API_SECRET', 'TESTKEY')
+SECRET_KEY = getenv("API_SECRET", "aaef2e5483cc355ddb517e1696539d0276667b93cd711ff20138f94809e2a8eb")
 ALGORITHM = 'HS256'
 
 
