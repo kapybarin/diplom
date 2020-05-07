@@ -8,7 +8,7 @@ from typing import Tuple
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 SECRET_KEY = getenv("API_SECRET")
-ALGORITHM = 'HS512'
+ALGORITHM = 'HS256'
 
 
 def is_valid_email(email: str) -> Tuple[bool, str]:
