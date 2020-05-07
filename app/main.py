@@ -8,7 +8,7 @@ from jwt import PyJWTError
 import jwt
 
 from models import setup_database, User
-from models_api import NewUser, TokenData
+from models_api import NewUser
 from tools import is_valid_email, verify_password, get_password_hash, create_access_token, SECRET_KEY, ALGORITHM
 
 load_dotenv()
