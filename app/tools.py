@@ -1,7 +1,6 @@
 from email_validator import validate_email, EmailNotValidError
 from passlib.context import CryptContext
-import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 from os import getenv
 import jwt
 
