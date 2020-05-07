@@ -1,13 +1,15 @@
-from fastapi import FastAPI, Response, status
+from fastapi import FastAPI, Response, status, HTTPException, Depends
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from dotenv import load_dotenv
 from pony.orm import db_session, RowNotFound, commit
-from os import getenv
+from jwt import PyJWTError
+import jwt
 
 from models import setup_database, User
-from models_api import NewUser
-from tools import is_valid_email, verify_password, get_password_hash, create_access_token
+from models_api import NewUser, TokenData
+from tools import is_valid_email, verify_password, get_password_hash, create_access_token, SECRET_KEY, ALGORITHM
 
 load_dotenv()
 app = FastAPI()
@@ -44,6 +46,21 @@ def custom_openapi():
     }
     app.openapi_schema = openapi_schema
     return app.openapi_schema
+
+
+@db_session
+def validate_token(token: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            return False, None
+    except PyJWTError:
+        return False, None
+    user = User.find(email=email)
+    if user is None:
+        return False, None
+    return True, email
 
 
 @app.get("/")
@@ -96,7 +113,19 @@ def user_auth(email: str, password: str, res: Response):
     access_token = create_access_token(
         data={"sub": curr_user.email}
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer", "user_id": curr_user.id}
+
+
+@app.get("/user/all")
+@db_session
+def list_users(token: str, res: Response):
+    is_valid_token, email = validate_token(token)
+    if not is_valid_token:
+        res.status_code = status.HTTP_403_FORBIDDEN
+        return {"err": "Token is not valid"}
+    u = [x.to_dict() for x in User[:]]
+
+    return {"Users": u}
 
 
 app.openapi = custom_openapi
