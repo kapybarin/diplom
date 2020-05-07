@@ -7,7 +7,7 @@ from pony.orm import db_session, RowNotFound, commit
 
 from models import setup_database, User
 from models_api import NewUser
-from tools import is_valid_email
+from tools import is_valid_email, verify_password, get_password_hash, create_access_token
 
 load_dotenv()
 app = FastAPI()
@@ -28,6 +28,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 def custom_openapi():
     if app.openapi_schema:
@@ -59,7 +60,8 @@ def new_user(u: NewUser, res: Response):
         return {"error": txt}
     curr_user = User.get(email=txt)
     if curr_user is None:
-        User(email=txt, first_name=u.name, last_name=u.surname, password=u.password)
+        hashed_pass = get_password_hash(u.password)
+        User(email=txt, first_name=u.name, last_name=u.surname, password=hashed_pass)
         commit()
         return {"id": User.get(email=txt).id}
     else:
@@ -78,6 +80,23 @@ def get_user(id: int, res: Response):
     message = u.to_dict()
     message.pop("password", None)
     return message
+
+
+@app.post("/user/authenticate")
+@db_session
+def user_auth(email: str, password: str, res: Response):
+    curr_user = User.get(email=email)
+    if curr_user is None:
+        res.status_code = status.HTTP_400_BAD_REQUEST
+        return {"error": f'No user with email - {email} found'}
+    is_valid_pass = verify_password(password, curr_user.password)
+    if not is_valid_pass:
+        res.status_code = status.HTTP_401_UNAUTHORIZED
+        return {"error": f'Incorrect password'}
+    access_token = create_access_token(
+        data={"sub": curr_user.email}
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 app.openapi = custom_openapi
