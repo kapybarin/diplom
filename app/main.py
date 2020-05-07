@@ -86,7 +86,7 @@ def new_user(u: NewUser, res: Response):
         return {"error": f'User already exists with the same email and id {curr_user.id}'}
 
 
-@app.get("/user/{id}")
+@app.get("/user/id/{id}")
 @db_session
 def get_user(id: int, res: Response):
     try:
@@ -116,7 +116,7 @@ def user_auth(email: str, password: str, res: Response):
     return {"access_token": access_token, "token_type": "bearer", "user_id": curr_user.id}
 
 
-@app.get("/user/all")
+@app.get("/user/")
 @db_session
 def list_users(token: str, res: Response):
     is_valid_token, email = validate_token(token)
