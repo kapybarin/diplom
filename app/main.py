@@ -54,13 +54,13 @@ def validate_token(token: str):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")
         if email is None:
-            return False, None
+            return False, None,1
     except PyJWTError:
-        return False, None
+        return False, None, 2
     user = User.find(email=email)
     if user is None:
-        return False, None
-    return True, email
+        return False, None, 3
+    return True, email, 4
 
 
 @app.get("/")
@@ -113,16 +113,16 @@ def user_auth(email: str, password: str, res: Response):
     access_token = create_access_token(
         data={"sub": curr_user.email}
     )
-    return {"access_token": access_token, "token_type": "bearer", "user_id": curr_user.id}
+    return {"access_token": access_token, "user_id": curr_user.id}
 
 
 @app.get("/user/")
 @db_session
 def list_users(token: str, res: Response):
-    is_valid_token, email = validate_token(token)
+    is_valid_token, email, tmp = validate_token(token)
     if not is_valid_token:
         res.status_code = status.HTTP_403_FORBIDDEN
-        return {"err": "Token is not valid"}
+        return {"err": "Token is not valid", "tmp": tmp}
     u = [x.to_dict() for x in User[:]]
 
     return {"Users": u}
