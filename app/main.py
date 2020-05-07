@@ -93,7 +93,6 @@ def user_auth(email: str, password: str, res: Response):
     if not is_valid_pass:
         res.status_code = status.HTTP_401_UNAUTHORIZED
         return {"error": f'Incorrect password'}
-    return {"key": getenv("API_SECRET")}
     access_token = create_access_token(
         data={"sub": curr_user.email}
     )
