@@ -37,24 +37,6 @@ services:
     networks:
       - fullstack
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: full_pgadmin
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
-      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
-      - VIRTUAL_HOST=${VIRTUAL_HOST_PG_ADM}
-      - VIRTUAL_PORT=${VIRTUAL_PORT_PG_ADM}
-      - LETSENCRYPT_HOST=${LETSENCRYPT_HOST_PG_ADM}
-      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
-    depends_on:
-      - fullstack-postgres
-    ports:
-      - "5050:80"
-    networks:
-      - fullstack
-    restart: unless-stopped
-
 volumes:
   api:
   database_postgres:
