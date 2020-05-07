@@ -1,9 +1,9 @@
 from fastapi import FastAPI, Response, status
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
-
 from dotenv import load_dotenv
 from pony.orm import db_session, RowNotFound, commit
+from os import getenv
 
 from models import setup_database, User
 from models_api import NewUser
@@ -93,6 +93,7 @@ def user_auth(email: str, password: str, res: Response):
     if not is_valid_pass:
         res.status_code = status.HTTP_401_UNAUTHORIZED
         return {"error": f'Incorrect password'}
+    return {"key": getenv("API_SECRET")}
     access_token = create_access_token(
         data={"sub": curr_user.email}
     )
