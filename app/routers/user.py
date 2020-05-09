@@ -77,7 +77,7 @@ def user_admin(id: int, token: str, is_admin: bool, res: Response):
     return {"id": u.id, "is_admin": u.is_admin}
 
 
-@router.get("/")
+@router.get("/all")
 @db_session
 def list_users(token: str, res: Response):
     is_valid_token, email = validate_token(token)
