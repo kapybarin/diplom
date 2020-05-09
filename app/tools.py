@@ -6,7 +6,7 @@ from os import getenv
 import jwt
 
 from typing import Tuple
-from app.models import User
+from .models import User
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
