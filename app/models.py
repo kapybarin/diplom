@@ -15,6 +15,7 @@ class User(db.Entity):
     group_Id = orm.Set('Group')
     pass_id = orm.Set('Pass')
     password = orm.Optional(str)
+    is_admin = orm.Optional(bool)
 
 
 class Cell(db.Entity):

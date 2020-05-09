@@ -28,7 +28,11 @@ def new_user(u: NewUser, res: Response):
 
 @router.get("/id/{id}")
 @db_session
-def get_user(id: int, res: Response):
+def get_user(id: int, token: str, res: Response):
+    is_valid_token, email = validate_token(token)
+    if not is_valid_token:
+        res.status_code = status.HTTP_403_FORBIDDEN
+        return {"err": "Token is not valid"}
     try:
         u = User[id]
     except RowNotFound:
@@ -56,6 +60,23 @@ def user_auth(email: str, password: str, res: Response):
     return {"access_token": access_token, "user_id": curr_user.id}
 
 
+@router.post("/make_admin")
+@db_session
+def user_admin(id: int, token: str, is_admin: bool, res: Response):
+    is_valid_token, email = validate_token(token)
+    if not is_valid_token:
+        res.status_code = status.HTTP_403_FORBIDDEN
+        return {"err": "Token is not valid"}
+    try:
+        u = User[id]
+    except RowNotFound:
+        res.status_code = status.HTTP_404_NOT_FOUND
+        return {"error": f'No user with id {id} found'}
+    u.is_admin = is_admin
+    commit()
+    return {"id": u.id, "is_admin": u.is_admin}
+
+
 @router.get("/")
 @db_session
 def list_users(token: str, res: Response):
@@ -63,6 +84,10 @@ def list_users(token: str, res: Response):
     if not is_valid_token:
         res.status_code = status.HTTP_403_FORBIDDEN
         return {"err": "Token is not valid"}
+    curr_user = User.get(email=email)
+    if not curr_user.is_admin:
+        res.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {"err": f'User with email {email} is not admin!'}
     u = [x.to_dict() for x in select(u for u in User)[:]]
 
     return {"Users": u}
