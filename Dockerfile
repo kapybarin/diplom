@@ -7,5 +7,5 @@ EXPOSE 8000
 COPY . ./
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-RUN chmod +x test.sh
-RUN ./test.sh
+RUN chmod +x /start_app.sh
+CMD ["/start.sh"]
