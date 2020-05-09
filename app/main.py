@@ -49,4 +49,5 @@ def read_root():
 
 
 app.include_router(user.router, prefix="/user")
-app.openapi_schema = custom_openapi
+
+app.openapi = custom_openapi
