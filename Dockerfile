@@ -8,4 +8,4 @@ COPY . ./
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN chmod +x /start_app.sh
-CMD ["/start.sh"]
+CMD ["/start_app.sh"]
