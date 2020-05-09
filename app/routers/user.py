@@ -1,9 +1,9 @@
 from fastapi import APIRouter, status, Response
 from pony.orm import db_session, commit, RowNotFound, select
 
-from ..models import User
-from ..models_api import NewUser
-from ..tools import is_valid_email, get_password_hash, verify_password, create_access_token, validate_token
+from app.models import User
+from app.models_api import NewUser
+from app.tools import is_valid_email, get_password_hash, verify_password, create_access_token, validate_token
 
 router = APIRouter()
 
