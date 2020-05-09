@@ -95,7 +95,7 @@ def list_users(token: str, res: Response):
 
 @router.get("/update_info")
 @db_session
-def update_user_info(token: str, user: UpdateInfoUser, res: Response):
+def update_user_info(user: UpdateInfoUser, token: str, res: Response):
     is_valid_token, email = validate_token(token)
     if not is_valid_token:
         res.status_code = status.HTTP_403_FORBIDDEN
@@ -122,7 +122,7 @@ def update_user_info(token: str, user: UpdateInfoUser, res: Response):
 
 @router.get("/update_password")
 @db_session
-def update_password(token:str, old_password:str, new_password:str, res: Response):
+def update_password(token: str, old_password: str, new_password: str, res: Response):
     is_valid_token, email = validate_token(token)
     if not is_valid_token:
         res.status_code = status.HTTP_403_FORBIDDEN
