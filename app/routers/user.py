@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, Response
 from pony.orm import db_session, commit, RowNotFound, select
 
 from app.models import User
-from app.models_api import NewUser
+from app.models_api import NewUser, UpdateInfoUser
 from app.tools import is_valid_email, get_password_hash, verify_password, create_access_token, validate_token
 
 router = APIRouter()
@@ -91,3 +91,50 @@ def list_users(token: str, res: Response):
     u = [x.to_dict() for x in select(u for u in User)[:]]
 
     return {"Users": u}
+
+
+@router.get("/update_info")
+@db_session
+def update_user_info(token: str, user: UpdateInfoUser, res: Response):
+    is_valid_token, email = validate_token(token)
+    if not is_valid_token:
+        res.status_code = status.HTTP_403_FORBIDDEN
+        return {"err": "Token is not valid"}
+    token_user = User.get(email=email)
+    if token_user.email != user.email and not token_user.is_admin:
+        res.status_code = status.HTTP_400_BAD_REQUEST
+        return {"err": "Non admin users can only update their info!"}
+
+    user_for_update = User.get(email=user)
+    if user_for_update is None:
+        res.status_code = status.HTTP_400_BAD_REQUEST
+        return {"err": f'No user with email {user.email} found!'}
+
+    user_for_update.email = user.email
+    user_for_update.first_name = user.name
+    user_for_update.last_name = user.surname
+    commit()
+
+    res = user_for_update.to_dict()
+    res.pop("password", None)
+    return res
+
+
+@router.get("/update_password")
+@db_session
+def update_password(token:str, old_password:str, new_password:str, res: Response):
+    is_valid_token, email = validate_token(token)
+    if not is_valid_token:
+        res.status_code = status.HTTP_403_FORBIDDEN
+        return {"err": "Token is not valid"}
+
+    token_user = User.get(email=email)
+    is_valid_pass = verify_password(old_password, token_user.password)
+    if not is_valid_pass:
+        res.status_code = status.HTTP_401_UNAUTHORIZED
+        return {"error": f'Incorrect old password'}
+
+    hashed_new_pass = get_password_hash(new_password)
+    token_user.password = hashed_new_pass
+
+    return {"Success!"}
