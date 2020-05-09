@@ -3,8 +3,8 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
-from models import setup_database
-from routers import user
+from .models import setup_database
+from .routers import user
 
 load_dotenv()
 app = FastAPI()
