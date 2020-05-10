@@ -9,6 +9,6 @@ class NewUser(BaseModel):
 
 
 class UpdateInfoUser(BaseModel):
-    email: str
+    id: int
     name: str
     surname: str

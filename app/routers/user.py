@@ -102,7 +102,7 @@ def update_user_info(user: UpdateInfoUser, token: str, res: Response):
         res.status_code = code
         return error
 
-    if token_user.email != user.email and not token_user.is_admin:
+    if token_user.id != user.id and not token_user.is_admin:
         res.status_code = status.HTTP_400_BAD_REQUEST
         return {"err": "Non admin users can only update their info!"}
 
