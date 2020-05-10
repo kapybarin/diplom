@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 from app.models import setup_database
-from app.routers import user
+from app.routers import user, cell, lease
 
 load_dotenv()
 app = FastAPI()
@@ -49,5 +49,7 @@ def read_root():
 
 
 app.include_router(user.router, prefix="/user")
+app.include_router(cell.router, prefix="/cell")
+app.include_router(lease.router, prefix="/lease")
 
 app.openapi = custom_openapi

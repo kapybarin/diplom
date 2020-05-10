@@ -3,7 +3,8 @@ from pony.orm import db_session, commit, RowNotFound, select
 
 from app.models import User
 from app.models_api import NewUser, UpdateInfoUser
-from app.tools import is_valid_email, get_password_hash, verify_password, create_access_token, validate_token
+from app.tools import is_valid_email, get_password_hash, verify_password, create_access_token, validate_token, \
+    get_user_by_token
 
 router = APIRouter()
 
@@ -29,10 +30,10 @@ def new_user(u: NewUser, res: Response):
 @router.get("/id/{id}")
 @db_session
 def get_user(id: int, token: str, res: Response):
-    is_valid_token, email = validate_token(token)
-    if not is_valid_token:
-        res.status_code = status.HTTP_403_FORBIDDEN
-        return {"err": "Token is not valid"}
+    token_user, error, code = get_user_by_token(token)
+    if error:
+        res.status_code = code
+        return error
     try:
         u = User[id]
     except RowNotFound:
@@ -63,10 +64,10 @@ def user_auth(email: str, password: str, res: Response):
 @router.post("/make_admin")
 @db_session
 def user_admin(id: int, token: str, is_admin: bool, res: Response):
-    is_valid_token, email = validate_token(token)
-    if not is_valid_token:
-        res.status_code = status.HTTP_403_FORBIDDEN
-        return {"err": "Token is not valid"}
+    token_user, error, code = get_user_by_token(token)
+    if error:
+        res.status_code = code
+        return error
     try:
         u = User[id]
     except RowNotFound:
@@ -80,14 +81,14 @@ def user_admin(id: int, token: str, is_admin: bool, res: Response):
 @router.get("/all")
 @db_session
 def list_users(token: str, res: Response):
-    is_valid_token, email = validate_token(token)
-    if not is_valid_token:
-        res.status_code = status.HTTP_403_FORBIDDEN
-        return {"err": "Token is not valid"}
-    curr_user = User.get(email=email)
-    if not curr_user.is_admin:
+    token_user, error, code = get_user_by_token(token)
+    if error:
+        res.status_code = code
+        return error
+
+    if not token_user.is_admin:
         res.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
-        return {"err": f'User with email {email} is not admin!'}
+        return {"err": f'User with email {token_user.email} is not admin!'}
     u = [x.to_dict() for x in select(u for u in User)[:]]
 
     return {"Users": u}
@@ -96,11 +97,11 @@ def list_users(token: str, res: Response):
 @router.get("/update_info")
 @db_session
 def update_user_info(user: UpdateInfoUser, token: str, res: Response):
-    is_valid_token, email = validate_token(token)
-    if not is_valid_token:
-        res.status_code = status.HTTP_403_FORBIDDEN
-        return {"err": "Token is not valid"}
-    token_user = User.get(email=email)
+    token_user, error, code = get_user_by_token(token)
+    if error:
+        res.status_code = code
+        return error
+
     if token_user.email != user.email and not token_user.is_admin:
         res.status_code = status.HTTP_400_BAD_REQUEST
         return {"err": "Non admin users can only update their info!"}
@@ -123,12 +124,10 @@ def update_user_info(user: UpdateInfoUser, token: str, res: Response):
 @router.get("/update_password")
 @db_session
 def update_password(token: str, old_password: str, new_password: str, res: Response):
-    is_valid_token, email = validate_token(token)
-    if not is_valid_token:
-        res.status_code = status.HTTP_403_FORBIDDEN
-        return {"err": "Token is not valid"}
-
-    token_user = User.get(email=email)
+    token_user, error, code = get_user_by_token(token)
+    if error:
+        res.status_code = code
+        return error
     is_valid_pass = verify_password(old_password, token_user.password)
     if not is_valid_pass:
         res.status_code = status.HTTP_401_UNAUTHORIZED
