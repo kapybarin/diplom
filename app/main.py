@@ -18,15 +18,6 @@ origins = [
     "https://localhost:3000",
 ]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
@@ -51,5 +42,15 @@ def read_root():
 app.include_router(user.router, prefix="/user")
 app.include_router(cell.router, prefix="/cell")
 app.include_router(lease.router, prefix="/lease")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"]
+)
+
 
 app.openapi = custom_openapi
