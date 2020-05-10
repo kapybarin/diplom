@@ -94,7 +94,7 @@ def list_users(token: str, res: Response):
     return {"Users": u}
 
 
-@router.get("/update_info")
+@router.post("/update_info")
 @db_session
 def update_user_info(user: UpdateInfoUser, token: str, res: Response):
     token_user, error, code = get_user_by_token(token)
@@ -121,7 +121,7 @@ def update_user_info(user: UpdateInfoUser, token: str, res: Response):
     return res
 
 
-@router.get("/update_password")
+@router.post("/update_password")
 @db_session
 def update_password(token: str, old_password: str, new_password: str, res: Response):
     token_user, error, code = get_user_by_token(token)
