@@ -18,7 +18,7 @@ def new_user(u: NewUser, res: Response):
     curr_user = User.get(email=txt)
     if curr_user is None:
         hashed_pass = get_password_hash(u.password)
-        User(email=txt, first_name=u.name, last_name=u.surname, password=hashed_pass)
+        User(email=txt, first_name=u.name, last_name=u.surname, password=hashed_pass, is_admin=False)
         commit()
         return {"id": User.get(email=txt).id}
     else:
