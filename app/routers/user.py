@@ -106,12 +106,14 @@ def update_user_info(user: UpdateInfoUser, token: str, res: Response):
         res.status_code = status.HTTP_400_BAD_REQUEST
         return {"err": "Non admin users can only update their info!"}
 
-    user_for_update = User.get(email=user)
+    try:
+        user_for_update = User[user.id]
+    except RowNotFound:
+        user_for_update = None
     if user_for_update is None:
         res.status_code = status.HTTP_400_BAD_REQUEST
-        return {"err": f'No user with email {user.email} found!'}
+        return {"err": f'No user with id {user.id} found!'}
 
-    user_for_update.email = user.email
     user_for_update.first_name = user.name
     user_for_update.last_name = user.surname
     commit()
