@@ -12,3 +12,8 @@ class UpdateInfoUser(BaseModel):
     id: int
     name: str
     surname: str
+
+
+class CellType(BaseModel):
+    id: int
+    name: str

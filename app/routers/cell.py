@@ -3,6 +3,7 @@ from pony.orm import db_session, select
 
 from app.tools import get_user_by_token
 from app.models import Cell_Type
+from app.models_api import CellType
 
 router = APIRouter()
 
@@ -14,5 +15,5 @@ def get_cell_types(token: str, res: Response):
     if error:
         res.status_code = code
         return error
-    type = [t.to_dict() for t in select(c for c in Cell_Type)[:]]
-    return {"available":type}
+    types = [CellType(name=t.name, id=t.id) for t in select(c for c in Cell_Type)[:]]
+    return types
