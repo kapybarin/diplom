@@ -1,9 +1,7 @@
 from app.models import setup_database, Cell_Type
 from dotenv import load_dotenv
-from pony.orm import db_session
 
 
-@db_session
 def main():
     load_dotenv()
     db = setup_database(True)
