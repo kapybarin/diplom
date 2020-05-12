@@ -64,5 +64,9 @@ class Token(db.Entity):
 def setup_database():
     db.bind(provider='postgres', user=getenv("DB_USER"), password=getenv("DB_PASSWORD"), host=getenv("DB_HOST"),
             database=getenv("DB_NAME"))
-    db.generate_mapping(create_tables=False)
+    db.generate_mapping(create_tables=True)
+    names = ["Ноутбук", "Документы", "Мышь", "Клавиатура", "Маркеры"]
+    for name in names:
+        c = Cell_Type(name=name)
+        db.commit()
     return db

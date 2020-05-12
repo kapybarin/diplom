@@ -16,5 +16,4 @@ else
 fi
 
 # Start Gunicorn
-python setup_data.py
 exec gunicorn -k "$WORKER_CLASS" -c "$GUNICORN_CONF" "$APP_MODULE"
