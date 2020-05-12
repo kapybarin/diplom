@@ -61,8 +61,8 @@ class Token(db.Entity):
     user_id = orm.Required(User)
 
 
-def setup_database():
+def setup_database(create=False):
     db.bind(provider='postgres', user=getenv("DB_USER"), password=getenv("DB_PASSWORD"), host=getenv("DB_HOST"),
             database=getenv("DB_NAME"))
-    db.generate_mapping(create_tables=True)
+    db.generate_mapping(create_tables=create)
     return db
