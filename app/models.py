@@ -61,12 +61,17 @@ class Token(db.Entity):
     user_id = orm.Required(User)
 
 
-def setup_database():
-    db.bind(provider='postgres', user=getenv("DB_USER"), password=getenv("DB_PASSWORD"), host=getenv("DB_HOST"),
-            database=getenv("DB_NAME"))
-    db.generate_mapping(create_tables=True)
+@orm.db_session
+def setup_data():
     names = ["Ноутбук", "Документы", "Мышь", "Клавиатура", "Маркеры"]
     for name in names:
         c = Cell_Type(name=name)
         db.commit()
+
+
+def setup_database():
+    db.bind(provider='postgres', user=getenv("DB_USER"), password=getenv("DB_PASSWORD"), host=getenv("DB_HOST"),
+            database=getenv("DB_NAME"))
+    db.generate_mapping(create_tables=True)
+    setup_data()
     return db
