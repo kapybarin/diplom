@@ -1,6 +1,6 @@
 from datetime import datetime
 from pony import orm
-from os import getenv
+from os import getenv, environ
 
 db = orm.Database()
 
@@ -72,12 +72,15 @@ def setup_database():
 def setup_data(database = None):
     if database is None:
         return False
+    if getenv("SETUPED") == 'DA':
+        return True
     try:
         Cell_Type(name="Ноутбук")
         Cell_Type(name="Мышь")
         Cell_Type(name="Маркер")
         Cell_Type(name="Документы")
         orm.commit()
+        environ['SETUPED'] = 'DA'
         return True
     except:
         return False
