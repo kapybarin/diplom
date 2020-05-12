@@ -3,16 +3,12 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
-from app.models import setup_database, setup_data
+from app.models import setup_database
 from app.routers import user, cell, lease
 
 load_dotenv()
 app = FastAPI()
 db = setup_database()
-success = setup_data(db)
-if not success:
-    print('NO DATA CAN BE SETUP')
-    exit(0)
 
 origins = [
     "http://api.noirdjinn.dev",
