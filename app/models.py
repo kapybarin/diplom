@@ -66,3 +66,18 @@ def setup_database():
             database=getenv("DB_NAME"))
     db.generate_mapping(create_tables=True)
     return db
+
+
+@orm.db_session
+def setup_data(database = None):
+    if database is None:
+        return False
+    try:
+        Cell_Type(name="Ноутбук")
+        Cell_Type(name="Мышь")
+        Cell_Type(name="Маркер")
+        Cell_Type(name="Документы")
+        orm.commit()
+        return True
+    except:
+        return False
