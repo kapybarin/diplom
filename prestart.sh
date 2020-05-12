@@ -1,2 +1,2 @@
 #! /usr/bin/env sh
-python app/setup_data.py
+python setup_data.py
