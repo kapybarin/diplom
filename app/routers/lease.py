@@ -30,4 +30,4 @@ def new_lease(token: str, cell_type: int, res: Response):
     l.token_id = current_token.id
     commit()
 
-    return {"token":current_token.value, "cell": current_cell}
+    return {"token":current_token.value, "cell": current_cell.id}
