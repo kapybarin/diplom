@@ -82,7 +82,9 @@ def get_available_cell_types():
 
 @orm.db_session
 def get_free_cell(id: int):
-    return randrange(0, 1000)
+    c = Cell(cell_type_id=id, is_empty=True)
+    orm.commit()
+    return c
 
 
 def setup_database():

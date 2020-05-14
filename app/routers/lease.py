@@ -23,7 +23,7 @@ def new_lease(token: str, cell_type: int, res: Response):
     current_time = datetime.utcnow()
     current_cell = get_free_cell(cell_type)
 
-    l = Lease(start_time=current_time, cell_id=current_cell, user_id=token_user.id, is_returned=False)
+    l = Lease(start_time=current_time, cell_id=current_cell.id, user_id=token_user.id, is_returned=False)
     commit()
 
     current_token = create_new_token(token_user.id, l.id)
