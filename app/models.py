@@ -1,6 +1,7 @@
 from datetime import datetime
 from pony import orm
 from os import getenv, environ
+from random import randrange
 
 db = orm.Database()
 
@@ -59,6 +60,7 @@ class Token(db.Entity):
     expires_at = orm.Optional(datetime)
     lease_id = orm.Required(Lease)
     user_id = orm.Required(User)
+    value = orm.Required(str)
 
 
 @orm.db_session
@@ -70,6 +72,17 @@ def setup_data():
             db.commit()
     except:
         pass
+
+
+@orm.db_session
+def get_available_cell_types():
+    types = [t.id for t in orm.select(c for c in Cell_Type)[:]]
+    return types
+
+
+@orm.db_session
+def get_free_cell(id: int):
+    return randrange(0, 1000)
 
 
 def setup_database():

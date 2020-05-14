@@ -29,7 +29,7 @@ def custom_openapi():
         routes=app.routes,
     )
     openapi_schema["info"]["x-logo"] = {
-        "url": "https://raw.githubusercontent.com/Svintsova/TakeAndGo/master/public/logo192.png"
+        "url": "https://raw.githubusercontent.com/Svintsova/TAGdiploma2020/master/public/hselogo.png"
     }
     app.openapi_schema = openapi_schema
     return app.openapi_schema

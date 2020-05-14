@@ -1,13 +1,13 @@
 from email_validator import validate_email, EmailNotValidError
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
-from pony.orm import db_session, RowNotFound
+from pony.orm import db_session, commit
 from os import getenv
 from fastapi import status
 import jwt
 
 from typing import Tuple
-from app.models import User
+from app.models import User, Token
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 SECRET_KEY = getenv("API_SECRET", 'aaef2e5483cc355ddb517e1696539d0276667b93cd711ff20138f94809e2a8eb')
@@ -65,3 +65,11 @@ def get_user_by_token(token: str):
     if not u:
         return None, {"error": f'No user with email {email} found'}, status.HTTP_404_NOT_FOUND
     return u, None, status.HTTP_200_OK
+
+
+@db_session
+def create_new_token(user_id:int, lease_id:int):
+    t = Token(user_id=user_id, expires_at=datetime.utcnow() + timedelta(days=30), lease_id=lease_id)
+    commit()
+    return t
+
