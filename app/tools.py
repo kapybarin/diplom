@@ -57,6 +57,7 @@ def validate_token(token: str):
     return True, email
 
 
+@db_session
 def get_user_by_token(token: str):
     is_valid_token, email = validate_token(token)
     if not is_valid_token:

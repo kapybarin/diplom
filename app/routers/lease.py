@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Response, status
 from datetime import datetime
-from pony.orm import commit, db_session, RowNotFound
+from pony.orm import commit, db_session
 
 from app.tools import get_user_by_token, create_new_token
 from app.models import get_available_cell_types, Lease, get_free_cell
