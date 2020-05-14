@@ -8,8 +8,8 @@ from app.models import get_available_cell_types, Lease, get_free_cell
 router = APIRouter()
 
 
-@db_session
 @router.post("/new")
+@db_session
 def new_lease(token: str, cell_type: int, res: Response):
     token_user, error, code = get_user_by_token(token)
     if error:
