@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from pony.orm import db_session, commit
 from os import getenv
 from fastapi import status
+from random import randrange
 import jwt
 
 from typing import Tuple
@@ -29,6 +30,10 @@ def verify_password(plain_password, hashed_password):
 
 def get_password_hash(password):
     return pwd_context.hash(password)
+
+
+def generate_token_value():
+    return (str(randrange(0, 999999))).zfill(6)
 
 
 def create_access_token(*, data: dict, expires_delta: timedelta = None):
@@ -70,7 +75,7 @@ def get_user_by_token(token: str):
 
 @db_session
 def create_new_token(user_id:int, lease_id:int):
-    t = Token(user_id=user_id, expires_at=datetime.utcnow() + timedelta(days=30), lease_id=lease_id)
+    t = Token(user_id=user_id, expires_at=datetime.utcnow() + timedelta(days=30), lease_id=lease_id, value=generate_token_value())
     commit()
     return t
 
