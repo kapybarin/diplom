@@ -78,7 +78,7 @@ def take_equipment(code: str, res: Response):
     l = select(x for x in Lease if x.id == t.lease_id.id).first()
     c = select(x for x in Cell if x.id == l.cell_id.id).first()
 
-    if c.is_taken:
+    if c.is_empty:
         res.status_code = status.HTTP_400_BAD_REQUEST
         return {"err": "Already taken!"}
 
