@@ -27,7 +27,7 @@ def cell_statuses():
     res = []
     for x in c:
         cell = x.copy()
-        cell["type_name"] = types[str(cell["id"])]
+        cell["type_name"] = types[str(cell["cell_type_id"])]
         res.append(cell)
 
     return {"Cells:": res}
