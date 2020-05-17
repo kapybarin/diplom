@@ -28,7 +28,6 @@ class Cell(db.Entity):
 class Cell_Type(db.Entity):
     id = orm.PrimaryKey(int, auto=True)
     name = orm.Optional(str, nullable=True, unique=True)
-    cell_id = orm.Optional(Cell)
 
 
 class Lease(db.Entity):
