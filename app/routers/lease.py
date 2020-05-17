@@ -78,6 +78,10 @@ def take_equipment(code: str, res: Response):
     l = select(x for x in Lease if x.id == t.lease_id.id).first()
     c = select(x for x in Cell if x.id == l.cell_id.id).first()
 
+    if c.is_taken:
+        res.status_code = status.HTTP_400_BAD_REQUEST
+        return {"err": "Already taken!"}
+
     c.is_empty = True
 
     return {f"Cell {c.id} opened!"}
@@ -95,8 +99,8 @@ def return_equipment(code: str, res: Response):
         res.status_code = status.HTTP_400_BAD_REQUEST
         return {"err": "Your code is invalid!"}
 
-    l = select(x for x in Lease if x.id == t.lease_id).first()
-    c = select(x for x in Cell if x.id == l.cell_id).first()
+    l = select(x for x in Lease if x.id == t.lease_id.id).first()
+    c = select(x for x in Cell if x.id == l.cell_id.id).first()
     current_time = datetime.utcnow()
 
     if l.is_returned:
