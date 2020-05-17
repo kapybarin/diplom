@@ -1,7 +1,6 @@
 from datetime import datetime
 from pony import orm
-from os import getenv, environ
-from random import randrange
+from os import getenv
 
 db = orm.Database()
 
@@ -70,7 +69,7 @@ def setup_data():
         for type in types:
             c = Cell_Type(name=type[0])
             db.commit()
-            for i in range(0, type[1]):
+            for i in range(0, type[1] + 1):
                 t = Cell(is_empty=False, cell_type_id=c.id)
                 db.commit()
     except:
