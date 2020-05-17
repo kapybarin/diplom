@@ -21,6 +21,7 @@ class User(db.Entity):
 class Cell(db.Entity):
     id = orm.PrimaryKey(int, auto=True)
     is_empty = orm.Optional(bool)
+    is_taken = orm.Optional(bool)
     leases_id = orm.Set("Lease")
     cell_type_id = orm.Required(int)
 
@@ -58,7 +59,7 @@ class Token(db.Entity):
     expires_at = orm.Optional(datetime)
     lease_id = orm.Required(Lease)
     user_id = orm.Required(User)
-    value = orm.Required(str)
+    value = orm.Required(str, unique=True)
 
 
 @orm.db_session
@@ -97,7 +98,11 @@ def get_available_cell_types():
 @orm.db_session
 def get_free_cell(id: int):
     c = (
-        orm.select(c for c in Cell if c.cell_type_id == id and c.is_empty == False)
+        orm.select(
+            c
+            for c in Cell
+            if c.cell_type_id == id and c.is_empty == False and c.is_taken == False
+        )
         .order_by(lambda x: orm.desc(x.id))
         .first()
     )

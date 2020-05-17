@@ -81,11 +81,16 @@ def get_user_by_token(token: str):
 
 @db_session
 def create_new_token(user_id: int, lease_id: int):
-    t = Token(
-        user_id=user_id,
-        expires_at=datetime.utcnow() + timedelta(days=30),
-        lease_id=lease_id,
-        value=generate_token_value(),
-    )
-    commit()
+    while True:
+        try:
+            t = Token(
+                user_id=user_id,
+                expires_at=datetime.utcnow() + timedelta(days=30),
+                lease_id=lease_id,
+                value=generate_token_value(),
+            )
+            commit()
+            break
+        except:
+            pass
     return t
