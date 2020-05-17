@@ -78,6 +78,10 @@ def take_equipment(code: str, res: Response):
     l = select(x for x in Lease if x.id == t.lease_id.id).first()
     c = select(x for x in Cell if x.id == l.cell_id.id).first()
 
+    if l.is_returned:
+        res.status_code = status.HTTP_400_BAD_REQUEST
+        return {"err": "Lease already ended!"}
+
     if c.is_empty:
         res.status_code = status.HTTP_400_BAD_REQUEST
         return {"err": "Already taken!"}
@@ -106,6 +110,10 @@ def return_equipment(code: str, res: Response):
     if l.is_returned:
         res.status_code = status.HTTP_400_BAD_REQUEST
         return {"err": "Lease already ended!"}
+
+    if c.is_empty == False:
+        res.status_code = status.HTTP_400_BAD_REQUEST
+        return {"err": "Cell is not empty!"}
 
     c.is_empty = False
     c.is_taken = False
