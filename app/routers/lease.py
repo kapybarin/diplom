@@ -56,7 +56,7 @@ def get_leases_by_user(token: str, res: Response, with_closed: bool = False):
         for x in select(
             u
             for u in Lease
-            if u.user_id == token_user.id and u.is_returned in (with_closed, False)
+            if u.user_id.id == token_user.id and u.is_returned in (with_closed, False)
         )[:]
     ]
 
@@ -75,8 +75,8 @@ def take_equipment(code: str, res: Response):
         res.status_code = status.HTTP_400_BAD_REQUEST
         return {"err": "Your code is invalid!"}
 
-    l = select(x for x in Lease if x.id == t.lease_id).first()
-    c = select(x for x in Cell if x.id == l.cell_id).first()
+    l = select(x for x in Lease if x.id == t.lease_id.id).first()
+    c = select(x for x in Cell if x.id == l.cell_id.id).first()
 
     c.is_empty = True
 
