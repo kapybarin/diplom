@@ -96,12 +96,11 @@ def get_available_cell_types():
 
 @orm.db_session
 def get_free_cell(id: int):
-    try:
-        c = orm.select(
-            c for c in Cell if c.cell_type_id == id and c.is_empty == False
-        ).order_by(lambda x: orm.desc(x.id))[:1]
-    except:
-        c = None
+    c = (
+        orm.select(c for c in Cell if c.cell_type_id == id and c.is_empty == False)
+        .order_by(lambda x: orm.desc(x.id))
+        .first()
+    )
     return c
 
 
