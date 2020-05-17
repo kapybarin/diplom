@@ -66,15 +66,8 @@ class Token(db.Entity):
 def setup_data():
     types = [["Ноутбук", 2], ["Документы", 1], ["Мышь", 2], ["Клавиатура", 2], ["Маркеры", 2]]
     try:
-        for type in types:
-            c = Cell_Type(name=type[0])
-            db.commit()
-
-        # let's try some dirty hack
-        for i in range(0, len(types)):
-            for j in range(0, len(types[1])):
-                t = Cell(is_empty=False, cell_type_id=i)
-                db.commit()
+        db_types = [Cell_Type(name=type[0]) for type in types]
+        db_cells = [Cell(is_empty=False, cell_type_id=i) for i in range(0, len(types))]
     except:
         pass
 
