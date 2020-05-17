@@ -69,7 +69,10 @@ def setup_data():
         for type in types:
             c = Cell_Type(name=type[0])
             db.commit()
+
+        for type in types:
             for i in range(0, type[1] + 1):
+                c = Cell_Type.get(name=type[0])
                 t = Cell(is_empty=False, cell_type_id=c.id)
                 db.commit()
     except:
