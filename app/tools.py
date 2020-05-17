@@ -35,7 +35,7 @@ def get_password_hash(password):
 
 
 def generate_token_value():
-    return (str(randrange(0, 999999))).zfill(6)
+    return (str(randrange(0, 9999))).zfill(4)
 
 
 def create_access_token(*, data: dict, expires_delta: timedelta = None):
