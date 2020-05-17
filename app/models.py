@@ -84,7 +84,7 @@ def setup_data():
         for type in types:
             c = Cell_Type.get(name=type[0])
             for i in range(0, type[1]):
-                Cell(is_empty=False, cell_type_id=c.id)
+                Cell(is_empty=False, cell_type_id=c.id, is_taken=False)
         db.commit()
     except:
         pass
