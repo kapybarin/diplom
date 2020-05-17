@@ -22,7 +22,7 @@ class Cell(db.Entity):
     id = orm.PrimaryKey(int, auto=True)
     is_empty = orm.Optional(bool)
     leases_id = orm.Set('Lease')
-    cell_type_id = orm.Required('Cell_Type')
+    cell_type_id = orm.Required(int)
 
 
 class Cell_Type(db.Entity):
@@ -71,7 +71,7 @@ def setup_data():
             Cell_Type(name=type[0])
     except:
         pass
-    db.commit()
+
     try:
         for type in types:
             c = Cell_Type.get(name=type[0])
