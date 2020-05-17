@@ -66,8 +66,8 @@ class Token(db.Entity):
 def setup_data():
     types = [["Ноутбук", 2], ["Документы", 1], ["Мышь", 2], ["Клавиатура", 2], ["Маркеры", 2]]
     try:
-        db_types = [Cell_Type(name=type[0]).save() for type in types]
-        db_cells = [Cell(is_empty=False, cell_type_id=i).save() for i in range(0, len(types))]
+        for type in types:
+            Cell_Type(name=type[0])
     except:
         pass
 
