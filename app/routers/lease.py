@@ -7,9 +7,6 @@ from app.models import get_available_cell_types, Lease, get_free_cell, Token, Ce
 
 router = APIRouter()
 
-# TODO code длинной 4 символа
-# TODO режимы code (взять/вернуть)
-
 
 @router.post("/new")
 @db_session
