@@ -65,11 +65,14 @@ class Token(db.Entity):
 
 @orm.db_session
 def setup_data():
-    names = ["Ноутбук", "Документы", "Мышь", "Клавиатура", "Маркеры"]
+    types = [["Ноутбук", 2], ["Документы", 1], ["Мышь", 2], ["Клавиатура", 2], ["Маркеры", 2]]
     try:
-        for name in names:
-            c = Cell_Type(name=name)
+        for type in types:
+            c = Cell_Type(name=type[0])
             db.commit()
+            for i in range(0, type[1]):
+                t = Cell(is_empty=False, cell_type_id=c.id)
+                db.commit()
     except:
         pass
 
