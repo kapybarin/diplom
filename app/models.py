@@ -68,6 +68,8 @@ def setup_data():
     try:
         for type in types:
             Cell_Type(name=type[0])
+            for i in range(0, len(type[1])):
+                Cell(is_empty=False, cell_type_id=id)
     except:
         pass
 
