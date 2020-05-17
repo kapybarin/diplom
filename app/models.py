@@ -9,11 +9,11 @@ class User(db.Entity):
     id = orm.PrimaryKey(int, auto=True)
     email = orm.Optional(str, unique=True, nullable=True)
     first_name = orm.Optional(str, nullable=True)
-    token_id = orm.Set('Token')
+    token_id = orm.Set("Token")
     last_name = orm.Optional(str, nullable=True)
-    leases_id = orm.Set('Lease')
-    group_Id = orm.Set('Group')
-    pass_id = orm.Set('Pass')
+    leases_id = orm.Set("Lease")
+    group_Id = orm.Set("Group")
+    pass_id = orm.Set("Pass")
     password = orm.Optional(str)
     is_admin = orm.Optional(bool)
 
@@ -21,7 +21,7 @@ class User(db.Entity):
 class Cell(db.Entity):
     id = orm.PrimaryKey(int, auto=True)
     is_empty = orm.Optional(bool)
-    leases_id = orm.Set('Lease')
+    leases_id = orm.Set("Lease")
     cell_type_id = orm.Required(int)
 
 
@@ -36,7 +36,7 @@ class Lease(db.Entity):
     end_time = orm.Optional(datetime)
     is_returned = orm.Optional(bool)
     cell_id = orm.Required(Cell)
-    token_id = orm.Optional('Token')
+    token_id = orm.Optional("Token")
     user_id = orm.Required(User)
 
 
@@ -63,7 +63,13 @@ class Token(db.Entity):
 
 @orm.db_session
 def setup_data():
-    types = [["Ноутбук", 2], ["Документы", 1], ["Мышь", 2], ["Клавиатура", 2], ["Маркеры", 2]]
+    types = [
+        ["Ноутбук", 2],
+        ["Документы", 1],
+        ["Мышь", 2],
+        ["Клавиатура", 2],
+        ["Маркеры", 2],
+    ]
 
     try:
         for type in types:
@@ -82,7 +88,6 @@ def setup_data():
         pass
 
 
-
 @orm.db_session
 def get_available_cell_types():
     types = [t.id for t in orm.select(c for c in Cell_Type)[:]]
@@ -91,14 +96,25 @@ def get_available_cell_types():
 
 @orm.db_session
 def get_free_cell(id: int):
-    c = Cell(cell_type_id=id, is_empty=True)
-    orm.commit()
+    try:
+        c = (
+            Cell.select(lambda x: x.cell_type_id == id)
+            .filter(lambda t: t.is_empty is False)
+            .order_by(orm.desc(Cell.id))[:1]
+        )
+    except:
+        c = None
     return c
 
 
 def setup_database():
-    db.bind(provider='postgres', user=getenv("DB_USER"), password=getenv("DB_PASSWORD"), host=getenv("DB_HOST"),
-            database=getenv("DB_NAME"))
+    db.bind(
+        provider="postgres",
+        user=getenv("DB_USER"),
+        password=getenv("DB_PASSWORD"),
+        host=getenv("DB_HOST"),
+        database=getenv("DB_NAME"),
+    )
     db.generate_mapping(create_tables=True)
     setup_data()
     return db

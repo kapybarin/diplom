@@ -15,6 +15,7 @@ def new_lease(token: str, cell_type: int, res: Response):
     if error:
         res.status_code = code
         return error
+
     available_cell_types = get_available_cell_types()
     if cell_type not in available_cell_types:
         res.status_code = status.HTTP_400_BAD_REQUEST
@@ -22,12 +23,20 @@ def new_lease(token: str, cell_type: int, res: Response):
 
     current_time = datetime.utcnow()
     current_cell = get_free_cell(cell_type)
+    if current_cell is None:
+        res.status_code = status.HTTP_400_BAD_REQUEST
+        return {"err": "All equipment with such type is taken!"}
 
-    l = Lease(start_time=current_time, cell_id=current_cell.id, user_id=token_user.id, is_returned=False)
+    l = Lease(
+        start_time=current_time,
+        cell_id=current_cell.id,
+        user_id=token_user.id,
+        is_returned=False,
+    )
     commit()
 
     current_token = create_new_token(token_user.id, l.id)
     l.token_id = current_token.id
     commit()
 
-    return {"token":current_token.value, "cell": current_cell.id}
+    return {"token": current_token.value, "cell": current_cell.id}
