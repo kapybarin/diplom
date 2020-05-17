@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, Response
 from pony.orm import db_session, commit, RowNotFound, select
-from datetime import datetime
+from datetime import datetime, date
 
 from app.models import User
 from app.models_api import NewUser, UpdateInfoUser
@@ -25,13 +25,15 @@ def new_user(u: NewUser, res: Response):
     curr_user = User.get(email=txt)
     if curr_user is None:
         hashed_pass = get_password_hash(u.password)
+        today = date.today()
+        create_date = datetime(today.year, today.month, today.day, 0, 0)
         User(
             email=txt,
             first_name=u.name,
             last_name=u.surname,
             password=hashed_pass,
             is_admin=False,
-            create_date=datetime.now().date(),
+            create_date=create_date,
         )
         commit()
         return {"id": User.get(email=txt).id}
