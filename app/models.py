@@ -16,6 +16,7 @@ class User(db.Entity):
     pass_id = orm.Set("Pass")
     password = orm.Optional(str)
     is_admin = orm.Optional(bool)
+    create_date = orm.Optional(datetime)
 
 
 class Cell(db.Entity):

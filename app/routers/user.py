@@ -1,5 +1,6 @@
 from fastapi import APIRouter, status, Response
 from pony.orm import db_session, commit, RowNotFound, select
+from datetime import datetime
 
 from app.models import User
 from app.models_api import NewUser, UpdateInfoUser
@@ -8,7 +9,6 @@ from app.tools import (
     get_password_hash,
     verify_password,
     create_access_token,
-    validate_token,
     get_user_by_token,
 )
 
@@ -31,6 +31,7 @@ def new_user(u: NewUser, res: Response):
             last_name=u.surname,
             password=hashed_pass,
             is_admin=False,
+            create_date=datetime.now().date(),
         )
         commit()
         return {"id": User.get(email=txt).id}
