@@ -60,7 +60,17 @@ def get_leases_by_user(token: str, res: Response, with_closed: bool = False):
         )[:]
     ]
 
-    return {"Leases": l}
+    res = []
+    for lease in l:
+        t = Token.get(lease_id=lease["id"])
+        if t is None:
+            res.status_code = status.HTTP_400_BAD_REQUEST
+            return {"err": f"Lease without token with id {lease['id']}"}
+        current = lease
+        current["token"] = t.value
+        res.append(current)
+
+    return {"Leases": res}
 
 
 @router.post("/take_equipment")
