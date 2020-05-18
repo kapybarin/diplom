@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from dotenv import load_dotenv
 import sentry_sdk
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
@@ -31,7 +30,7 @@ def custom_openapi():
         return app.openapi_schema
     openapi_schema = get_openapi(
         title="TakeAndGo",
-        version="0.1.0",
+        version="0.1.1",
         description="Smart bookshelf project",
         routes=app.routes,
     )
@@ -51,8 +50,6 @@ app.include_router(user.router, prefix="/user")
 app.include_router(cell.router, prefix="/cell")
 app.include_router(lease.router, prefix="/lease")
 
-
-app.add_middleware(HTTPSRedirectMiddleware)
 app.add_middleware(SentryAsgiMiddleware)
 
 app.add_middleware(PrometheusMiddleware)
