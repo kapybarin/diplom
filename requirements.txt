@@ -1,5 +1,5 @@
 pony==0.7.13
-fastapi==0.54.1
+fastapi==0.54.2
 python-dotenv==0.13.0
 psycopg2-binary==2.8.5
 email_validator==1.1.0
@@ -8,3 +8,5 @@ passlib==1.7.2
 bcrypt==3.1.7
 uvicorn==0.11.5
 gunicorn==20.0.4
+sentry-sdk==0.14.4
+starlette-prometheus==0.6.0

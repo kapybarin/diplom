@@ -31,3 +31,8 @@ def cell_statuses():
         res.append(cell)
 
     return {"Cells:": res}
+
+
+@router.get("/test")
+def cell_test():
+    raise ZeroDivisionError
