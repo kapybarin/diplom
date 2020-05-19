@@ -68,9 +68,6 @@ def get_leases_by_user(token: str, res: Response, with_closed: bool = False):
             return {"err": f"Lease without token with id {lease['id']}"}
         current = lease
         current["token"] = t.value
-        # Swift dirty hacks
-        if current["end_time"] is None:
-            current["end_time"] = ""
         res.append(current)
 
     return {"Leases": res}
