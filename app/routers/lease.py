@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Response, status
 from datetime import datetime
-from pony.orm import commit, db_session, select, RowNotFound, desc
+from pony.orm import commit, db_session, select, RowNotFound
 
 from app.tools import get_user_by_token, create_new_token
 from app.models import get_available_cell_types, Lease, get_free_cell, Token, Cell
@@ -66,8 +66,16 @@ def get_leases_by_user(token: str, res: Response, with_closed: bool = False):
         if t is None:
             res.status_code = status.HTTP_400_BAD_REQUEST
             return {"err": f"Lease without token with id {lease['id']}"}
+        try:
+            c = Cell[lease["cell_id"]]
+        except RowNotFound:
+            c = None
+        if c is None:
+            res.status_code = status.HTTP_400_BAD_REQUEST
+            return {"err": f"Lease without cell with id {lease['id']}"}
         current = lease
         current["token"] = t.value
+        current["cell_type"] = c.cell_type_id
         res.append(current)
 
     return {"Leases": res}
