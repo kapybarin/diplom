@@ -78,7 +78,7 @@ def get_leases_by_user(token: str, res: Response, with_closed: bool = False):
         current["cell_type"] = c.cell_type_id
         res.append(current)
 
-    return {"Leases": res}
+    return res
 
 
 @router.post("/take_equipment")
