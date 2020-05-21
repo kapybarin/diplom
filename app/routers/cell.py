@@ -30,7 +30,7 @@ def current_types(token: str, res: Response):
     free_types = set()
     for cell in cells:
         if cell["cell_type_id"] not in free_types:
-            free_types.update(cell["cell_type_id"])
+            free_types.add(cell["cell_type_id"])
 
     return list(free_types)
 
