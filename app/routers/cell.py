@@ -15,10 +15,7 @@ def get_cell_types(token: str, res: Response):
     if error:
         res.status_code = code
         return error
-    types = [
-        CellType(name=t.name, id=t.id)
-        for t in select(c for c in Cell_Type if c.is_taken == False)[:]
-    ]
+    types = [CellType(name=t.name, id=t.id) for t in select(c for c in Cell_Type)[:]]
     return types
 
 
@@ -29,7 +26,7 @@ def current_types(token: str, res: Response):
     if error:
         res.status_code = code
         return error
-    cells = [x.to_dict() for x in select(c for c in Cell[:])]
+    cells = [x.to_dict() for x in select(c for c in Cell if c.is_taken == False)[:]]
     free_types = set()
     for cell in cells:
         if cell.cell_type_id not in free_types:
