@@ -29,8 +29,8 @@ def current_types(token: str, res: Response):
     cells = [x.to_dict() for x in select(c for c in Cell if c.is_taken == False)[:]]
     free_types = set()
     for cell in cells:
-        if cell.cell_type_id not in free_types:
-            free_types.update(cell.cell_type_id)
+        if cell["cell_type_id"] not in free_types:
+            free_types.update(cell["cell_type_id"])
 
     return list(free_types)
 
