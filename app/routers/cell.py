@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Response
-from pony.orm import db_session, select
+from pony.orm import db_session, select, RowNotFound
 
 from app.tools import get_user_by_token
 from app.models import Cell_Type, Cell
@@ -28,11 +28,19 @@ def current_types(token: str, res: Response):
         return error
     cells = [x.to_dict() for x in select(c for c in Cell if c.is_taken == False)[:]]
     free_types = set()
+    res = []
     for cell in cells:
         if cell["cell_type_id"] not in free_types:
             free_types.add(cell["cell_type_id"])
+            t = dict()
+            t["id"] = cell["cell_type_id"]
+            try:
+                t["name"] = Cell_Type[cell["cell_type_id"]].name
+            except RowNotFound:
+                t["name"] = None
+            res.append(t)
 
-    return list(free_types)
+    return res
 
 
 @router.get("/statuses")
