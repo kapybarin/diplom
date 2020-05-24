@@ -24,4 +24,11 @@ def all_statistics(res: Response):
         for x in select((u.create_date, count(u)) for u in User)[:]
     ]
 
-    return {"user_growth_by_date": user_growth_by_date}
+    all_equipment = [
+        x
+        for x in select(
+            (t.cell_type_id, count(t.id), count(t.is_taken == False)) for t in Cell
+        )[:]
+    ]
+
+    return {"user_growth_by_date": user_growth_by_date, "tst": all_equipment}
