@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Response
+from fastapi import APIRouter, Response, status
 from pony.orm import db_session, select, count, desc
 
-from app.models import Cell_Type, Cell, Lease, User, db
+from app.models import Cell_Type, Cell, User, db
 from app.models_api import UserGrowth, EquipmentFreeRatio, CellType, LeasesByType
 from app.tools import get_user_by_token
 
@@ -10,14 +10,14 @@ router = APIRouter()
 
 @router.get("/all")
 @db_session
-def all_statistics(res: Response):
-    # token_user, error, code = get_user_by_token(token)
-    # if error:
-    #    res.status_code = code
-    #    return error
-    # if not token_user.is_admin:
-    #    res.status_code = status.HTTP_400_BAD_REQUEST
-    #    return {"err": "Token user is not admin!"}
+def all_statistics(token: str, res: Response):
+    token_user, error, code = get_user_by_token(token)
+    if error:
+        res.status_code = code
+        return error
+    if not token_user.is_admin:
+        res.status_code = status.HTTP_400_BAD_REQUEST
+        return {"err": "Token user is not admin!"}
 
     user_growth_by_date = [
         UserGrowth(date=x[0], count=x[1])
@@ -37,7 +37,7 @@ def all_statistics(res: Response):
     ]
 
     leases_by_type = [
-        x
+        LeasesByType(type_id=x[0], name=x[1], count=x[2])
         for x in db.select(
             """select c.cell_type_id as id, min(ct.name) as name, count(l.id)
                from lease l

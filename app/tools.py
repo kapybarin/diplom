@@ -12,7 +12,7 @@ from app.models import User, Token
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 SECRET_KEY = getenv(
-    "API_SECRET", "aaef2e5483cc355ddb517e1696539d0276667b93cd711ff20138f94809e2a8eb"
+    "API_SECRET", "555edb34ebc3636b80793eb5dafb559214d8662542fd27cc8d40266966288e87"
 )
 ALGORITHM = "HS256"
 
