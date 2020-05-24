@@ -2,7 +2,7 @@ from fastapi import APIRouter, Response
 from pony.orm import db_session, select, count, desc
 
 from app.models import Cell_Type, Cell, Lease, User
-from app.models_api import UserGrowth, EquipmentFreeRatio, CellType
+from app.models_api import UserGrowth, EquipmentFreeRatio, CellType, LeasesByType
 from app.tools import get_user_by_token
 
 router = APIRouter()
@@ -36,7 +36,21 @@ def all_statistics(res: Response):
         )[:]
     ]
 
+    leases_by_type = [
+        x
+        for x in select(
+            """
+            select c.cell_type_id as id, min(ct.name) as name, count(l.id)
+            from lease l
+            join cell c on c.id = l.cell_id
+            join cell_type ct on c.cell_type_id = ct.id
+            group by c.cell_type_id
+            order by c.cell_type_id"""
+        )
+    ]
+
     return {
         "user_growth_by_date": user_growth_by_date,
         "equipment_free_ratio": equipment_free_ratio,
+        "leases_by_type": leases_by_type
     }

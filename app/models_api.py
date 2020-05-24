@@ -31,3 +31,9 @@ class EquipmentFreeRatio(BaseModel):
     free: int
     total: int
     name: str = ""
+
+
+class LeasesByType(BaseModel):
+    type_id: int
+    count: int
+    name: str = ""
