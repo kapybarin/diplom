@@ -2,6 +2,7 @@ from fastapi import APIRouter, Response
 from pony.orm import db_session, select, count, desc
 
 from app.models import Cell_Type, Cell, Lease, User
+from app.models_api import UserGrowth
 from app.tools import get_user_by_token
 
 router = APIRouter()
@@ -18,13 +19,9 @@ def all_statistics(res: Response):
     #    res.status_code = status.HTTP_400_BAD_REQUEST
     #    return {"err": "Token user is not admin!"}
 
-    rows = [
-        x.to_dict()
+    user_growth_by_date = [
+        UserGrowth(date=x[0], count=x[1])
         for x in select((u.create_date, count(u)) for u in User)[:]
     ]
-    user_growth_by_date = dict()
-    if rows is not None:
-        for row in rows:
-            user_growth_by_date[row["create_date"]] = row["count"]
 
     return {"user_growth_by_date": user_growth_by_date}

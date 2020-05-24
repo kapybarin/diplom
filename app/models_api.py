@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from datetime import datetime
 
 
 class NewUser(BaseModel):
@@ -17,3 +18,8 @@ class UpdateInfoUser(BaseModel):
 class CellType(BaseModel):
     id: int
     name: str
+
+
+class UserGrowth(BaseModel):
+    date: datetime.time
+    count: int
