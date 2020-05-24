@@ -20,9 +20,7 @@ def all_statistics(res: Response):
 
     rows = [
         x.to_dict()
-        for x in select((u.create_date, count(u)) for u in User).order_by(
-            lambda x: desc(x.create_date)
-        )[:]
+        for x in select((u.create_date, count(u)) for u in User)[:]
     ]
     user_growth_by_date = dict()
     if rows is not None:
