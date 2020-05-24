@@ -7,7 +7,7 @@ from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from starlette_prometheus import metrics, PrometheusMiddleware
 
 from app.models import setup_database
-from app.routers import user, cell, lease
+from app.routers import user, cell, lease, statistics
 
 load_dotenv()
 app = FastAPI()
@@ -49,6 +49,7 @@ def read_root():
 app.include_router(user.router, prefix="/user")
 app.include_router(cell.router, prefix="/cell")
 app.include_router(lease.router, prefix="/lease")
+app.include_router(statistics.router, prefix="/statistics")
 
 app.add_middleware(SentryAsgiMiddleware)
 
