@@ -9,7 +9,7 @@ router = APIRouter()
 
 @router.get("/all")
 @db_session
-async def all_statistics(res: Response):
+def all_statistics(res: Response):
     # token_user, error, code = get_user_by_token(token)
     # if error:
     #    res.status_code = code
