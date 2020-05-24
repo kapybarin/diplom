@@ -24,3 +24,10 @@ class CellType(BaseModel):
 class UserGrowth(BaseModel):
     date: Optional[datetime] = None
     count: int
+
+
+class EquipmentFreeRatio(BaseModel):
+    id: int
+    free: int
+    total: int
+    name: str = ""
