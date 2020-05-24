@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Response
-from pony.orm import db_session, select, count
+from pony.orm import db_session, select, count, desc
 
 from app.models import Cell_Type, Cell, Lease, User
 from app.tools import get_user_by_token
@@ -21,8 +21,8 @@ def all_statistics(res: Response):
     rows = [
         x.to_dict()
         for x in select((u.create_date, count(u)) for u in User).order_by(
-            lambda x: x.create_date
-        )
+            lambda x: desc(x.create_date)
+        )[:]
     ]
     user_growth_by_date = dict()
     if rows is not None:
