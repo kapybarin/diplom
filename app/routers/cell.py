@@ -2,7 +2,7 @@ from fastapi import APIRouter, Response
 from pony.orm import db_session, select, RowNotFound
 
 from app.tools import get_user_by_token
-from app.models import Cell_Type, Cell
+from app.models import Cell_Type, Cell, Lease, User
 from app.models_api import CellType
 
 router = APIRouter()
@@ -55,3 +55,41 @@ def cell_statuses():
         res.append(cell)
 
     return {"Cells:": res}
+
+
+@router.get("/history")
+@db_session
+def get_cell_history(
+    token: str, cell_id: int, res: Response, with_closed: bool = False
+):
+    token_user, error, code = get_user_by_token(token)
+    if error:
+        res.status_code = code
+        return error
+
+    l = [
+        x.to_dict()
+        for x in select(
+            t
+            for t in Lease
+            if t.is_returned in (with_closed, False) and t.cell_id == cell_id
+        )[:]
+    ]
+
+    history = []
+    for lease in l:
+        curr = lease.copy()
+        try:
+            u = User[curr["user_id"]]
+            curr["user_name"] = u.first_name
+            curr["user_surname"] = u.last_name
+            curr["user_email"] = u.email
+        except RowNotFound:
+            curr["user_name"], curr["user_surname"], curr["user_email"] = (
+                None,
+                None,
+                None,
+            )
+        history.append(curr)
+
+    return history
