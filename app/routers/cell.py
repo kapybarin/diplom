@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Response
-from pony.orm import db_session, select, RowNotFound
+from pony.orm import db_session, select, RowNotFound, desc
 
 from app.tools import get_user_by_token
 from app.models import Cell_Type, Cell, Lease, User
@@ -73,7 +73,7 @@ def get_cell_history(
             t
             for t in Lease
             if t.is_returned in (with_closed, False) and t.cell_id == cell_id
-        )[:]
+        ).order_by(lambda y: desc(y.start_time))[:]
     ]
 
     history = []
