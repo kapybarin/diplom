@@ -139,3 +139,23 @@ def return_equipment(code: str, res: Response):
     l.is_returned = True
 
     return {f"Lease {l.id} ended and equipment is returned!"}
+
+
+@router.get("/all_leases")
+@db_session
+def get_all_leases(token: str, res: Response, with_closed: bool = False):
+    token_user, error, code = get_user_by_token(token)
+    if error:
+        res.status_code = code
+        return error
+
+    if not token_user.is_admin:
+        res.status_code = status.HTTP_400_BAD_REQUEST
+        return {"err": "Token user is not admin!"}
+
+    l = [
+        x.to_dict()
+        for x in select(t for t in Lease if t.is_returned in (with_closed, False))[:]
+    ]
+
+    return l
