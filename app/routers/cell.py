@@ -46,10 +46,10 @@ def current_types(token: str, res: Response):
 @router.get("/statuses")
 @db_session
 def cell_statuses():
-    c = [x.to_dict() for x in select(u for u in Cell)[:]]
+    c = [x.to_dict() for x in (select(u for u in Cell).order_by(lambda x: x.id))[:]]
     types = {
         str(t.id): t.name
-        for t in (select(c for c in Cell_Type).order_by(lambda x: x.id))[:]
+        for t in select(c for c in Cell_Type)[:]
     }
     res = []
     for x in c:
@@ -57,7 +57,9 @@ def cell_statuses():
         cell["type_name"] = types[str(cell["cell_type_id"])]
         res.append(cell)
 
-    return {"Cells:": res}
+    res = sorted(res, key=lambda x: x['id'])
+
+    return res
 
 
 @router.get("/history")
