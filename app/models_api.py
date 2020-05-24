@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 
 
 class NewUser(BaseModel):
@@ -21,5 +22,5 @@ class CellType(BaseModel):
 
 
 class UserGrowth(BaseModel):
-    date: datetime.time
+    date: Optional[datetime] = None
     count: int
