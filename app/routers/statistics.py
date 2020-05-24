@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Response
-from pony.orm import db_session, select, RowNotFound, desc
+from pony.orm import db_session, select, count
 
 from app.models import Cell_Type, Cell, Lease, User
 from app.tools import get_user_by_token
@@ -14,18 +14,19 @@ async def all_statistics(res: Response):
     # if error:
     #    res.status_code = code
     #    return error
+    # if not token_user.is_admin:
+    #    res.status_code = status.HTTP_400_BAD_REQUEST
+    #    return {"err": "Token user is not admin!"}
 
-    # fmt: off
-    rows = select(
-        '''select u.create_date as date, count(u.id) as count
-           from "user" u
-           group by u.create_date
-           order by u.create_date'''
-    )
-    # fmt: on
+    rows = [
+        x.to_dict()
+        for x in select((u.create_date, count(u)) for u in User).order_by(
+            lambda x: x.create_date
+        )
+    ]
     user_growth_by_date = dict()
     if rows is not None:
         for row in rows:
-            user_growth_by_date[row[0]] = row[1]
+            user_growth_by_date[row["create_date"]] = row["count"]
 
     return {"user_growth_by_date": user_growth_by_date}
