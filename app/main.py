@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 from dotenv import load_dotenv
 import sentry_sdk
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
@@ -52,7 +53,7 @@ app.include_router(lease.router, prefix="/lease")
 app.include_router(statistics.router, prefix="/statistics")
 
 app.add_middleware(SentryAsgiMiddleware)
-
+app.add_middleware(ProxyHeadersMiddleware)
 app.add_middleware(PrometheusMiddleware)
 app.add_route("/metrics/", metrics)
 
