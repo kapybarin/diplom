@@ -39,13 +39,12 @@ def all_statistics(res: Response):
     leases_by_type = [
         x
         for x in db.select(
-            """
-            select c.cell_type_id as id, min(ct.name) as name, count(l.id)
-            from lease l
-            join cell c on c.id = l.cell_id
-            join cell_type ct on c.cell_type_id = ct.id
-            group by c.cell_type_id
-            order by c.cell_type_id"""
+            """select c.cell_type_id as id, min(ct.name) as name, count(l.id)
+               from lease l
+               join cell c on c.id = l.cell_id
+               join cell_type ct on c.cell_type_id = ct.id
+               group by c.cell_type_id
+               order by c.cell_type_id"""
         )
     ]
 
