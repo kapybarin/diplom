@@ -72,7 +72,7 @@ def get_cell_history(
         for x in select(
             t
             for t in Lease
-            if t.is_returned in (with_closed, False) and t.cell_id == cell_id
+            if t.is_returned in (with_closed, False) and t.cell_id.id == cell_id
         ).order_by(lambda y: desc(y.start_time))[:]
     ]
 

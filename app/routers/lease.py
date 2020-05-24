@@ -141,7 +141,7 @@ def return_equipment(code: str, res: Response):
     return {f"Lease {l.id} ended and equipment is returned!"}
 
 
-@router.get("/all_leases")
+@router.get("/all")
 @db_session
 def get_all_leases(token: str, res: Response, with_closed: bool = False):
     token_user, error, code = get_user_by_token(token)
