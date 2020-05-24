@@ -30,7 +30,7 @@ def custom_openapi():
         return app.openapi_schema
     openapi_schema = get_openapi(
         title="TakeAndGo",
-        version="0.3.0",
+        version="0.3.1",
         description="Smart bookshelf project",
         routes=app.routes,
     )

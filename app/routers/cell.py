@@ -47,7 +47,10 @@ def current_types(token: str, res: Response):
 @db_session
 def cell_statuses():
     c = [x.to_dict() for x in select(u for u in Cell)[:]]
-    types = {str(t.id): t.name for t in select(c for c in Cell_Type)[:]}
+    types = {
+        str(t.id): t.name
+        for t in (select(c for c in Cell_Type).order_by(lambda x: x.id))[:]
+    }
     res = []
     for x in c:
         cell = x.copy()
