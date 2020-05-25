@@ -65,6 +65,7 @@ def get_user(id: int, token: str, res: Response):
 @router.post("/authenticate")
 @db_session
 def user_auth(email: str, password: str, res: Response):
+    email = email.strip().lower()
     curr_user = User.get(email=email)
     if curr_user is None:
         res.status_code = status.HTTP_400_BAD_REQUEST
