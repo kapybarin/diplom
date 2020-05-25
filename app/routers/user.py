@@ -21,7 +21,7 @@ def new_user(u: NewUser, res: Response):
     email_valid, txt = is_valid_email(u.email)
     if email_valid is False:
         res.status_code = status.HTTP_400_BAD_REQUEST
-        return {"error": txt}
+        return {"err": txt}
     txt = txt.strip().lower()
     curr_user = User.get(email=txt)
     if curr_user is None:
