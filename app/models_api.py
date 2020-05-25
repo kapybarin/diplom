@@ -43,4 +43,4 @@ class LeasesByTypeAndDate(BaseModel):
     type_id: int
     count: int
     name: str = ""
-    date: Optional[datetime] = None
+    date: str = None
