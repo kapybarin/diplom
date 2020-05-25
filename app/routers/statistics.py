@@ -26,7 +26,7 @@ def all_statistics(token: str, res: Response):
         return {"err": "Token user is not admin!"}
 
     user_growth_by_date = [
-        UserGrowth(date=x[0], count=x[1].strftime("%Y-%m-%d"))
+        UserGrowth(date=x[0].strftime("%Y-%m-%d"), count=x[1])
         for x in select((u.create_date, count(u)) for u in User)[:]
     ]
 
