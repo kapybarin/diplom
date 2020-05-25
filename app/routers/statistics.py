@@ -57,7 +57,7 @@ def all_statistics(token: str, res: Response):
     leases_by_type_and_date = [
         LeasesByTypeAndDate(type_id=x[0], name=x[1], count=x[2], date=x[3])
         for x in db.select(
-            """select c.cell_type_id as id, min(ct.name) as name, count(l.id) as count, date_trunc('day', l.start_time) as day
+            """select c.cell_type_id as id, min(ct.name) as name, count(l.id) as count, date(date_trunc('day', l.start_time)) as day
                from lease l
                join cell c on c.id = l.cell_id
                join cell_type ct on c.cell_type_id = ct.id
