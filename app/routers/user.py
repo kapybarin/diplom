@@ -22,6 +22,7 @@ def new_user(u: NewUser, res: Response):
     if email_valid is False:
         res.status_code = status.HTTP_400_BAD_REQUEST
         return {"error": txt}
+    txt = txt.strip().lower()
     curr_user = User.get(email=txt)
     if curr_user is None:
         hashed_pass = get_password_hash(u.password)
