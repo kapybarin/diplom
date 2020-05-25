@@ -41,7 +41,7 @@ def new_user(u: NewUser, res: Response):
     else:
         res.status_code = status.HTTP_400_BAD_REQUEST
         return {
-            "error": f"User already exists with the same email and id {curr_user.id}"
+            "err": f"User already exists with the same email and id {curr_user.id}"
         }
 
 
