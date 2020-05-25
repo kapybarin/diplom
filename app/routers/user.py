@@ -56,7 +56,7 @@ def get_user(id: int, token: str, res: Response):
         u = User[id]
     except RowNotFound:
         res.status_code = status.HTTP_404_NOT_FOUND
-        return {"error": f"No user with id {id} found"}
+        return {"err": f"No user with id {id} found"}
     message = u.to_dict()
     message.pop("password", None)
     return message
@@ -68,11 +68,11 @@ def user_auth(email: str, password: str, res: Response):
     curr_user = User.get(email=email)
     if curr_user is None:
         res.status_code = status.HTTP_400_BAD_REQUEST
-        return {"error": f"No user with email - {email} found"}
+        return {"err": f"No user with email - {email} found"}
     is_valid_pass = verify_password(password, curr_user.password)
     if not is_valid_pass:
         res.status_code = status.HTTP_401_UNAUTHORIZED
-        return {"error": f"Incorrect password"}
+        return {"err": f"Incorrect password"}
     access_token = create_access_token(data={"sub": curr_user.email})
     return {"access_token": access_token, "user_id": curr_user.id}
 
@@ -88,7 +88,7 @@ def user_admin(id: int, token: str, is_admin: bool, res: Response):
         u = User[id]
     except RowNotFound:
         res.status_code = status.HTTP_404_NOT_FOUND
-        return {"error": f"No user with id {id} found"}
+        return {"err": f"No user with id {id} found"}
     u.is_admin = is_admin
     commit()
     return {"id": u.id, "is_admin": u.is_admin}
@@ -149,7 +149,7 @@ def update_password(token: str, old_password: str, new_password: str, res: Respo
     is_valid_pass = verify_password(old_password, token_user.password)
     if not is_valid_pass:
         res.status_code = status.HTTP_401_UNAUTHORIZED
-        return {"error": f"Incorrect old password"}
+        return {"err": f"Incorrect old password"}
 
     hashed_new_pass = get_password_hash(new_password)
     token_user.password = hashed_new_pass
