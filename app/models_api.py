@@ -22,7 +22,7 @@ class CellType(BaseModel):
 
 
 class UserGrowth(BaseModel):
-    date: Optional[datetime] = None
+    date: str = None
     count: int
 
 
