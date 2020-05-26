@@ -159,3 +159,21 @@ def get_all_leases(token: str, res: Response, with_closed: bool = False):
     ]
 
     return l
+
+
+@router.post("/cancel")
+@db_session
+def cancel_lease(token:str, lease_id:int, res:Response):
+    token_user, error, code = get_user_by_token(token)
+    if error:
+        res.status_code = code
+        return error
+
+    try:
+        l = Lease[lease_id]
+    except RowNotFound:
+        res.status_code = status.HTTP_400_BAD_REQUEST
+        return {"err": "No such lease exists!"}
+
+    l.delete()
+    return {f"Lease with {lease_id} id deleted!"}
