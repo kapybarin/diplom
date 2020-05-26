@@ -8,6 +8,7 @@ from app.models_api import (
     CellType,
     LeasesByType,
     LeasesByTypeAndDate,
+    LeaseGrowth,
 )
 from app.tools import get_user_by_token
 
@@ -33,6 +34,16 @@ def all_statistics(token: str, res: Response):
     cell_types = [
         CellType(name=t.name, id=t.id)
         for t in (select(c for c in Cell_Type).order_by(lambda x: desc(x.id)))[:]
+    ]
+
+    lease_growth_by_date = [
+        LeaseGrowth(date=l[0], count=l[1])
+        for l in db.select(
+            """select to_char(date(date_trunc('day', l.start_time)), 'YYYY-MM-DD') as date, count(l.id) as count
+               from lease l
+               group by date_trunc('day', l.start_time)
+               order by date_trunc('day', l.start_time)"""
+        )
     ]
 
     equipment_free_ratio = [
@@ -71,4 +82,5 @@ def all_statistics(token: str, res: Response):
         "equipment_free_ratio": equipment_free_ratio,
         "leases_by_type": leases_by_type,
         "leases_by_type_and_date": leases_by_type_and_date,
+        "lease_growth_by_date": lease_growth_by_date,
     }

@@ -26,6 +26,11 @@ class UserGrowth(BaseModel):
     count: int
 
 
+class LeaseGrowth(BaseModel):
+    date: str = None
+    count: int
+
+
 class EquipmentFreeRatio(BaseModel):
     id: int
     free: int
