@@ -163,7 +163,7 @@ def get_all_leases(token: str, res: Response, with_closed: bool = False):
 
 @router.post("/cancel")
 @db_session
-def cancel_lease(token:str, lease_id:int, res:Response):
+def cancel_lease(token: str, lease_id: int, res: Response):
     token_user, error, code = get_user_by_token(token)
     if error:
         res.status_code = code

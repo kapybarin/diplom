@@ -1,6 +1,4 @@
 from pydantic import BaseModel
-from datetime import datetime
-from typing import Optional
 
 
 class NewUser(BaseModel):
@@ -17,6 +15,11 @@ class UpdateInfoUser(BaseModel):
 
 
 class CellType(BaseModel):
+    id: int
+    name: str
+
+
+class PassType(BaseModel):
     id: int
     name: str
 

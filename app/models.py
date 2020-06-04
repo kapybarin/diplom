@@ -49,10 +49,16 @@ class Group(db.Entity):
     name = orm.Optional(str)
 
 
+class Pass_Type(db.Entity):
+    id = orm.PrimaryKey(int, auto=True)
+    name = orm.Required(str)
+
+
 class Pass(db.Entity):
     id = orm.PrimaryKey(int, auto=True)
     user_id = orm.Required(User)
     pass_value = orm.Optional(str, unique=True)
+    pass_type = orm.Required(Pass_Type)
 
 
 class Token(db.Entity):
@@ -85,6 +91,14 @@ def setup_data():
             c = Cell_Type.get(name=type[0])
             for i in range(0, type[1]):
                 Cell(is_empty=False, cell_type_id=c.id, is_taken=False)
+        db.commit()
+    except:
+        pass
+
+    pass_types = ["Пропуск НИУ ВШЭ"]
+    try:
+        for type in pass_types:
+            PassType(name=type)
         db.commit()
     except:
         pass
