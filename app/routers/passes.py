@@ -54,9 +54,15 @@ def get_passes(token: str, res: Response, user_id: int = None):
     else:
         check_id = token_user.id
 
+    types = [PassType(name=t.name, id=t.id) for t in select(c for c in Pass_Type)[:]]
     passes = [x.to_dict() for x in select(t for t in Pass if t.user_id.id == check_id)]
+    res = []
+    for p in passes:
+        curr = p.copy()
+        curr['type_name'] = types[curr['pass_type']]
+        res.append(curr)
 
-    return passes
+    return res
 
 
 @router.get("/all")
