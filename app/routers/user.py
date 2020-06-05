@@ -10,6 +10,7 @@ from app.tools import (
     verify_password,
     create_access_token,
     get_user_by_token,
+    random_string,
 )
 
 router = APIRouter()
@@ -35,6 +36,7 @@ def new_user(u: NewUser, res: Response):
             password=hashed_pass,
             is_admin=False,
             create_date=create_date,
+            hse_pass=random_string(16),
         )
         commit()
         return {"id": User.get(email=txt).id}

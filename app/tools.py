@@ -8,6 +8,8 @@ from random import randrange
 import jwt
 
 from typing import Tuple
+import random
+import string
 from app.models import User, Token
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -94,3 +96,7 @@ def create_new_token(user_id: int, lease_id: int):
         except:
             pass
     return t
+
+
+def random_string(size=6, chars=string.ascii_uppercase + string.digits):
+    return "".join(random.choice(chars) for _ in range(size))
