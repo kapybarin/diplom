@@ -39,15 +39,22 @@ def get_pass_types(token: str, res: Response):
 
 @router.get("/get_by_user")
 @db_session
-def get_passes(token: str, res: Response):
+def get_passes(token: str, res: Response, user_id: int = None):
     token_user, error, code = get_user_by_token(token)
     if error:
         res.status_code = code
         return error
 
-    passes = [
-        x.to_dict() for x in select(t for t in Pass if t.user_id.id == token_user.id)
-    ]
+    if not token_user.is_admin and user_id != token_user.id:
+        res.status_code = status.HTTP_400_BAD_REQUEST
+        return {"err": "Only admins can view passes of other users!"}
+
+    if user_id is not None:
+        check_id = user_id
+    else:
+        check_id = token_user.id
+
+    passes = [x.to_dict() for x in select(t for t in Pass if t.user_id.id == check_id)]
 
     return passes
 
