@@ -58,7 +58,7 @@ class Pass(db.Entity):
 
 class Pass_Type(db.Entity):
     id = orm.PrimaryKey(int, auto=True)
-    name = orm.Required(str)
+    name = orm.Required(str, unique=True)
 
 
 class Token(db.Entity):
