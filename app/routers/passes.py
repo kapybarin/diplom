@@ -59,7 +59,7 @@ def get_passes(token: str, res: Response, user_id: int = None):
     res = []
     for p in passes:
         curr = p.copy()
-        curr["type_name"] = types[curr["pass_type"] - 1]
+        curr["type_name"] = types[curr["pass_type"] - 1].name
         res.append(curr)
 
     return res
@@ -78,8 +78,14 @@ def get_all_passes(token: str, res: Response):
         return {"err": "Token user is not admin!"}
 
     passes = [x.to_dict() for x in select(t for t in Pass)]
+    types = [PassType(name=t.name, id=t.id) for t in select(c for c in Pass_Type)[:]]
+    res = []
+    for p in passes:
+        curr = p.copy()
+        curr["type_name"] = types[curr["pass_type"] - 1].name
+        res.append(curr)
 
-    return passes
+    return res
 
 
 @router.post("/remove")
