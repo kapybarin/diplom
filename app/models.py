@@ -98,7 +98,7 @@ def setup_data():
     pass_types = ["Пропуск НИУ ВШЭ"]
     try:
         for type in pass_types:
-            PassType(name=type)
+            Pass_Type(name=type)
         db.commit()
     except:
         pass
