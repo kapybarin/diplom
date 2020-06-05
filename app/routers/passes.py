@@ -10,7 +10,7 @@ router = APIRouter()
 
 @router.post("/add")
 @db_session
-def add_pass(token: str, pass_value: str, pass_type: str, res: Response):
+def add_pass(token: str, pass_value: str, pass_type: int, res: Response):
     token_user, error, code = get_user_by_token(token)
     if error:
         res.status_code = code
