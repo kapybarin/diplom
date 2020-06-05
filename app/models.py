@@ -53,7 +53,7 @@ class Pass(db.Entity):
     id = orm.PrimaryKey(int, auto=True)
     user_id = orm.Required(User)
     pass_value = orm.Optional(str, unique=True)
-    pass_type = orm.Required(int)
+    pass_type_id = orm.Required(int)
 
 
 class Pass_Type(db.Entity):
