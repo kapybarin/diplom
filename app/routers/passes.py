@@ -59,7 +59,7 @@ def get_passes(token: str, res: Response, user_id: int = None):
     res = []
     for p in passes:
         curr = p.copy()
-        curr['type_name'] = types[curr['pass_type']]
+        curr["type_name"] = types[curr["pass_type"]]
         res.append(curr)
 
     return res
