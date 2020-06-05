@@ -49,16 +49,16 @@ class Group(db.Entity):
     name = orm.Optional(str)
 
 
-class Pass_Type(db.Entity):
-    id = orm.PrimaryKey(int, auto=True)
-    name = orm.Required(str)
-
-
 class Pass(db.Entity):
     id = orm.PrimaryKey(int, auto=True)
     user_id = orm.Required(User)
     pass_value = orm.Optional(str, unique=True)
-    pass_type = orm.Required("Pass_Type")
+    pass_type = orm.Required(int)
+
+
+class Pass_Type(db.Entity):
+    id = orm.PrimaryKey(int, auto=True)
+    name = orm.Required(str)
 
 
 class Token(db.Entity):
