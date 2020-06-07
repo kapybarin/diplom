@@ -171,9 +171,11 @@ def cancel_lease(token: str, lease_id: int, res: Response):
 
     try:
         l = Lease[lease_id]
+        t = Token[l.token_id]
     except RowNotFound:
         res.status_code = status.HTTP_400_BAD_REQUEST
         return {"err": "No such lease exists!"}
 
+    t.delete()
     l.delete()
     return {f"Lease with {lease_id} id deleted!"}
