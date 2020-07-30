@@ -6,7 +6,7 @@ email_validator==1.1.0
 pyjwt==1.7.1
 passlib==1.7.2
 bcrypt==3.1.7
-uvicorn==0.11.5
+uvicorn==0.11.7
 gunicorn==20.0.4
 sentry-sdk==0.14.4
 starlette-prometheus==0.6.0
